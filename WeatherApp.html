@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <style>
+.search-box select {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  width: 70%;
+}
+
+
+  </style>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weather App with Dropdown</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Weather App</h1>
+    <div class="search-box">
+      <select id="citySelect">
+        <option value="">Select a city</option>
+        <option value="London">London</option>
+        <option value="New York">New York</option>
+        <option value="Tokyo">Tokyo</option>
+        <option value="Paris">Paris</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Sydney">Sydney</option>
+      </select>
+      <button onclick="getWeather()">Search</button>
+    </div>
+    <div id="weatherInfo" class="weather-box"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+<script>
+  // script.js
+
+async function getWeather() {
+  const city = document.getElementById("citySelect").value;
+  const weatherBox = document.getElementById("weatherInfo");
+  const apiKey = "64701bc7a2b9ba4627b41334c366be57"; // Replace this with your real OpenWeatherMap API key
+
+  if (!city) {
+    return;
+  }
+
+  const url = "https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${64701bc7a2b9ba4627b41334c366be57}&units=metric";
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("City not found");
+
+    const data = await response.json();
+    const { name } = data;
+    const { icon, description } = data.weather[0];
+    const { temp } = data.main;
+
+    weatherBox.innerHTML = `
+      <h2>${name}</h2>
+      <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="${description}">
+      <p><strong>${temp}°C</strong></p>
+      <p>${description}</p>
+    `;
+  } catch (error) {
+    weatherBox.innerHTML = "Error: ${error.message}";
+  }
+}
+</script>
